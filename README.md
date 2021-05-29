@@ -47,9 +47,9 @@ Password of SSH.
 IP address of SSH host.   
 __mDMS name cannot be used.__   
 - CONFIG_SSH_COMMAND1   
-Command to execute.   
+The first command to execute.   
 - CONFIG_SSH_COMMAND2   
-Command to execute.   
+The second command to execute.   
 
 ![config-main](https://user-images.githubusercontent.com/6020549/120054821-3d755500-c06d-11eb-950c-d357d0a9fdef.jpg)
 ![config-app](https://user-images.githubusercontent.com/6020549/120054822-3fd7af00-c06d-11eb-8e0a-2cfbed407ad1.jpg)
