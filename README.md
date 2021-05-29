@@ -57,4 +57,12 @@ The second command to execute.
 # Screen Shot
 ![ssh-client-1](https://user-images.githubusercontent.com/6020549/120056024-b1ffc200-c074-11eb-8507-1bb566b0cc7c.jpg)
 
+# Reference
+https://github.com/nopnop2002/esp-idf-scp-client
+
+You can use scp and ssh to do heavy processing that esp32 alone cannot.  
+- Execute server-side command with ssh.   
+- Output the processing result to a file.   
+- Copy file from server using scp-get.   
+
 
