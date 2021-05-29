@@ -1,0 +1,53 @@
+menu "Application Configuration"
+
+	config ESP_WIFI_SSID
+		string "WiFi SSID"
+		default "myssid"
+		help
+			SSID (network name) for to connect to.
+
+	config ESP_WIFI_PASSWORD
+		string "WiFi Password"
+		default "mypassword"
+		help
+			WiFi password (WPA or WPA2) to use.
+
+	config ESP_MAXIMUM_RETRY
+		int "Maximum retry"
+		default 5
+		help
+			Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+
+	
+	config SSH_USER
+		string "SSH Username"
+		default "ssh-user"
+		help
+			Username of SSH Connection.
+
+	config SSH_PASSWORD
+		string "SSH Password"
+		default "ssh-pass"
+		help
+			Password of SSH Connection.
+
+	config SSH_HOST
+		string "SSH Host"
+		default "192.168.10.10"
+		help
+			IP address of SSH host.
+			mDMS name cannot be used.
+
+	config SSH_COMMAND1
+		string "Command to execute"
+		default "uname -a"
+		help
+			Command to execute.
+
+	config SSH_COMMAND2
+		string "Command to execute"
+		default "ls -l"
+		help
+			Command to execute.
+
+endmenu
