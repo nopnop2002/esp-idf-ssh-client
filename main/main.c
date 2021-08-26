@@ -156,7 +156,7 @@ void app_main(void)
 	configASSERT( xEventGroup );
 
 	// Execute SSH_COMMAND1
-	char param[32];
+	char param[64];
 	strcpy(param,CONFIG_SSH_COMMAND1);
 	xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
 	xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &param, 1, NULL);

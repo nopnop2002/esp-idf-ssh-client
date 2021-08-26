@@ -38,6 +38,12 @@ menu "Application Configuration"
 			IP address of SSH host.
 			mDMS name cannot be used.
 
+	config SSH_PORT
+		int "SSH Port"
+		default 22
+		help
+			Port number of SSH server.
+
 	config SSH_COMMAND1
 		string "Command to execute"
 		default "uname -a"

@@ -52,7 +52,7 @@ The first command to execute.
 The second command to execute.   
 
 ![config-main](https://user-images.githubusercontent.com/6020549/120054821-3d755500-c06d-11eb-950c-d357d0a9fdef.jpg)
-![config-app](https://user-images.githubusercontent.com/6020549/120054822-3fd7af00-c06d-11eb-8e0a-2cfbed407ad1.jpg)
+![config-app](https://user-images.githubusercontent.com/6020549/131046949-dd3c130d-bf7b-43e0-b1f0-a3c634c8af1f.jpg)
 
 # Screen Shot
 ![ssh-client-1](https://user-images.githubusercontent.com/6020549/120056024-b1ffc200-c074-11eb-8507-1bb566b0cc7c.jpg)

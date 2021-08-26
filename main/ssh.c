@@ -83,7 +83,7 @@ void ssh_task(void *pvParameters)
 		while(1) { vTaskDelay(1); }
 	}
 
-	/* Ultra basic "connect to port 22 on localhost"
+	/* 
 	 * Your code is responsible for creating the socket establishing the
 	 * connection
 	 */
@@ -93,8 +93,10 @@ void ssh_task(void *pvParameters)
 		while(1) { vTaskDelay(1); }
 	}
 
+	ESP_LOGI(TAG, "CONFIG_SSH_PORT=%d", CONFIG_SSH_PORT);
 	sin.sin_family = AF_INET;
-	sin.sin_port = htons(22);
+	//sin.sin_port = htons(22);
+	sin.sin_port = htons(CONFIG_SSH_PORT);
 	sin.sin_addr.s_addr = inet_addr(CONFIG_SSH_HOST);
 	if(connect(sock, (struct sockaddr*)(&sin),
 			   sizeof(struct sockaddr_in)) != 0) {
