@@ -46,6 +46,8 @@ Password of SSH.
 - CONFIG_SSH_HOST   
 IP address of SSH host.   
 __mDMS name cannot be used.__   
+- CONFIG_SSH_PORT   
+TCP port number 22 is used by default.   
 
 ![config-main](https://user-images.githubusercontent.com/6020549/120054821-3d755500-c06d-11eb-950c-d357d0a9fdef.jpg)
 ![config-app](https://user-images.githubusercontent.com/6020549/131051283-5614e66d-2c3a-4df7-88f2-863d3bf23b34.jpg)
