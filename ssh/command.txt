@@ -1,2 +1,4 @@
+# define ssh execute command
 uname -a
 ls -l
+python --version

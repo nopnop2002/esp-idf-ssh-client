@@ -200,11 +200,13 @@ void app_main(void)
 		return;
 	}
 
-	char line[128];
+	char line[256];
 	while(fgets(line, sizeof(line), fp) != NULL) {
 		int lineLen = strlen(line);
 		line[lineLen-1] = 0;
 		ESP_LOGI(TAG, "line=[%s] lineLen=%d", line, lineLen);
+		if (lineLen == 1) continue;
+		if (line[0] == '#') continue;
 
 		// Execute ssh command
 		xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
