@@ -46,13 +46,18 @@ Password of SSH.
 - CONFIG_SSH_HOST   
 IP address of SSH host.   
 __mDMS name cannot be used.__   
-- CONFIG_SSH_COMMAND1   
-The first command to execute.   
-- CONFIG_SSH_COMMAND2   
-The second command to execute.   
 
 ![config-main](https://user-images.githubusercontent.com/6020549/120054821-3d755500-c06d-11eb-950c-d357d0a9fdef.jpg)
-![config-app](https://user-images.githubusercontent.com/6020549/131046949-dd3c130d-bf7b-43e0-b1f0-a3c634c8af1f.jpg)
+![config-app](https://user-images.githubusercontent.com/6020549/131051283-5614e66d-2c3a-4df7-88f2-863d3bf23b34.jpg)
+
+# ssh command list   
+ssh command list is defined ssh/command.txt.
+```
+$ cat ssh/command.txt
+uname -a
+ls -l
+```
+
 
 # Screen Shot
 ![ssh-client-1](https://user-images.githubusercontent.com/6020549/120056024-b1ffc200-c074-11eb-8507-1bb566b0cc7c.jpg)

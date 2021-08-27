@@ -44,16 +44,4 @@ menu "Application Configuration"
 		help
 			Port number of SSH server.
 
-	config SSH_COMMAND1
-		string "Command to execute"
-		default "uname -a"
-		help
-			Command to execute.
-
-	config SSH_COMMAND2
-		string "Command to execute"
-		default "ls -l"
-		help
-			Command to execute.
-
 endmenu

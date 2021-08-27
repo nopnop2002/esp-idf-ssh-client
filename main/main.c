@@ -1,4 +1,4 @@
-/* SSH Example
+/* SSH Client Example
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)
 
@@ -19,8 +19,11 @@
 #include "esp_system.h"
 #include "esp_wifi.h"
 #include "esp_event.h"
-#include "esp_log.h"
 #include "nvs_flash.h"
+#include "esp_vfs.h"
+#include "esp_spiffs.h"
+#include "esp_err.h"
+#include "esp_log.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"
@@ -64,6 +67,17 @@ static void event_handler(void* arg, esp_event_base_t event_base,
 	}
 }
 
+static void SPIFFS_Directory(char * path) {
+	DIR* dir = opendir(path);
+	assert(dir != NULL);
+	while (true) {
+		struct dirent*pe = readdir(dir);
+		if (!pe) break;
+		ESP_LOGI(__FUNCTION__,"d_name=%s d_ino=%d d_type=%x", pe->d_name,pe->d_ino, pe->d_type);
+	}
+	closedir(dir);
+}
+
 void wifi_init_sta(void)
 {
 	s_wifi_event_group = xEventGroupCreate();
@@ -79,15 +93,15 @@ void wifi_init_sta(void)
 	esp_event_handler_instance_t instance_any_id;
 	esp_event_handler_instance_t instance_got_ip;
 	ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
-														ESP_EVENT_ANY_ID,
-														&event_handler,
-														NULL,
-														&instance_any_id));
+					ESP_EVENT_ANY_ID,
+					&event_handler,
+					NULL,
+					&instance_any_id));
 	ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
-														IP_EVENT_STA_GOT_IP,
-														&event_handler,
-														NULL,
-														&instance_got_ip));
+					IP_EVENT_STA_GOT_IP,
+					&event_handler,
+					NULL,
+					&instance_got_ip));
 
 	wifi_config_t wifi_config = {
 		.sta = {
@@ -151,34 +165,59 @@ void app_main(void)
 	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
 	wifi_init_sta();
 
+	ESP_LOGI(TAG, "Initializing SPIFFS");
+	esp_vfs_spiffs_conf_t conf = {
+		.base_path = "/spiffs",
+		.partition_label = NULL,
+		.max_files = 8,
+		.format_if_mount_failed = true
+	};
+
+	// Use settings defined above toinitialize and mount SPIFFS filesystem.
+	// Note: esp_vfs_spiffs_register is anall-in-one convenience function.
+	ret = esp_vfs_spiffs_register(&conf);
+
+	if (ret != ESP_OK) {
+		if (ret == ESP_FAIL) {
+			ESP_LOGE(TAG, "Failed to mount or format filesystem");
+		} else if (ret == ESP_ERR_NOT_FOUND) {
+			ESP_LOGE(TAG, "Failed to find SPIFFS partition");
+		} else {
+			ESP_LOGE(TAG, "Failed to initialize SPIFFS (%s)",esp_err_to_name(ret));
+		}
+		return;
+	}
+	SPIFFS_Directory("/spiffs/");
+
 	// Create Eventgroup
 	xEventGroup = xEventGroupCreate();
 	configASSERT( xEventGroup );
 
-	// Execute SSH_COMMAND1
-	char param[64];
-	strcpy(param,CONFIG_SSH_COMMAND1);
-	xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
-	xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &param, 1, NULL);
+	ESP_LOGI(TAG, "Opening file");
+	FILE* fp = fopen("/spiffs/command.txt", "r");
+	if (fp == NULL) {
+		ESP_LOGE(TAG, "Failed to open file for reading");
+		return;
+	}
 
-	// Wit for ssh finish.
-	xEventGroupWaitBits( xEventGroup,
-		TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
-		pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
-		pdFALSE,			/* Don't wait for both bits, either bit will do. */
-		portMAX_DELAY);		/* Wait forever. */
+	char line[128];
+	while(fgets(line, sizeof(line), fp) != NULL) {
+		int lineLen = strlen(line);
+		line[lineLen-1] = 0;
+		ESP_LOGI(TAG, "line=[%s] lineLen=%d", line, lineLen);
 
-	// Execute SSH_COMMAND2
-	strcpy(param,CONFIG_SSH_COMMAND2);
-	xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
-	xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &param, 1, NULL);
+		// Execute ssh command
+		xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
+		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &line, 2, NULL);
 
-	// Wit for ssh finish.
-	xEventGroupWaitBits( xEventGroup,
-		TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
-		pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
-		pdFALSE,			/* Don't wait for both bits, either bit will do. */
-		portMAX_DELAY);		/* Wait forever. */
+		// Wit for ssh finish.
+		xEventGroupWaitBits( xEventGroup,
+			TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
+			pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
+			pdFALSE,			/* Don't wait for both bits, either bit will do. */
+			portMAX_DELAY);		/* Wait forever. */
+	}
+	fclose(fp);
 
 	ESP_LOGI(TAG, "SSH all finish");
 

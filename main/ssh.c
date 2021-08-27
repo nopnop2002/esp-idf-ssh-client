@@ -1,4 +1,4 @@
-/* ssh Example
+/* ssh Client Example
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)
 
@@ -127,6 +127,19 @@ void ssh_task(void *pvParameters)
 		ESP_LOGE(TAG, "Authentication username : [%s].", CONFIG_SSH_USER);
 		while(1) { vTaskDelay(1); }
 	}
+
+#if 0
+	/* We could authenticate via privatekey */
+	char publickey[64];
+	char privatekey[64];
+	strcpy(publickey, "/spiffs/id_rsa.pub");
+	strcpy(privatekey, "/spiffs/id_rsa");
+	if(libssh2_userauth_publickey_fromfile(session, CONFIG_SSH_USER, publickey, privatekey, NULL)) {
+		ESP_LOGE(TAG, "Authentication by privatekey failed.");
+		ESP_LOGE(TAG, "Authentication username : [%s].", CONFIG_SSH_USER);
+		while(1) { vTaskDelay(1); }
+	}
+#endif
 
 
 	libssh2_trace(session, LIBSSH2_TRACE_SOCKET);
