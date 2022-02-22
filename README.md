@@ -4,21 +4,9 @@ This project use [this](https://github.com/libssh2/libssh2) ssh library.
 
 # Software requirements
 esp-idf v4.4 or later.   
+This is because this version supports ESP32-C3.   
 
-# Installation for ESP32
-
-```
-git clone https://github.com/nopnop2002/esp-idf-ssh-client
-cd esp-idf-ssh-client/
-git clone https://github.com/libssh2/libssh2 components/libssh2
-cp esp-idf/libssh2_config.h components/libssh2/include
-cp esp-idf/CMakeLists.txt components/libssh2
-idf.py set-target esp32
-idf.py menuconfig
-idf.py flash
-```
-
-# Installation for ESP32-S2
+# Installation
 
 ```
 git clone https://github.com/nopnop2002/esp-idf-ssh-client
@@ -26,10 +14,11 @@ cd esp-idf-ssh-client/
 git clone https://github.com/libssh2/libssh2 components/libssh2
 cp esp-idf/libssh2_config.h components/libssh2/include
 cp esp-idf/CMakeLists.txt components/libssh2
-idf.py set-target esp32s2
+idf.py set-target {esp32/esp32s2/esp32c3}
 idf.py menuconfig
 idf.py flash
 ```
+
 
 # Configuration   
 You have to set this config value with menuconfig.   
