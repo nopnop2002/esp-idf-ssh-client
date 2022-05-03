@@ -19,7 +19,6 @@ idf.py menuconfig
 idf.py flash
 ```
 
-
 # Configuration   
 
 ![config-main](https://user-images.githubusercontent.com/6020549/120054821-3d755500-c06d-11eb-950c-d357d0a9fdef.jpg)
@@ -34,6 +33,7 @@ ssh command list is defined ssh/command.txt.
 $ cat ssh/command.txt
 uname -a
 ls -l
+python --version
 ```
 
 
