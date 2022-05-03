@@ -25,8 +25,8 @@ idf.py flash
 ![config-main](https://user-images.githubusercontent.com/6020549/120054821-3d755500-c06d-11eb-950c-d357d0a9fdef.jpg)
 ![config-app](https://user-images.githubusercontent.com/6020549/166416531-7fa74d94-86fc-4cac-a568-74de07d7a051.jpg)
 
-- ssh host   
-IP address or mDNS host name.   
+- SSH Host   
+IP address or mDNS name.   
 
 # ssh command list   
 ssh command list is defined ssh/command.txt.
