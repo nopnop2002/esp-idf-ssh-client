@@ -33,10 +33,9 @@ menu "Application Configuration"
 
 	config SSH_HOST
 		string "SSH Host"
-		default "192.168.10.10"
+		default "ssh-host.local"
 		help
-			IP address of SSH host.
-			mDMS name cannot be used.
+			IP address or mDNS of SSH host.
 
 	config SSH_PORT
 		int "SSH Port"

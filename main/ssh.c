@@ -1,10 +1,10 @@
 /* ssh Client Example
 
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
+	 This example code is in the Public Domain (or CC0 licensed, at your option.)
 
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
+	 Unless required by applicable law or agreed to in writing, this
+	 software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+	 CONDITIONS OF ANY KIND, either express or implied.
 */
 #include <string.h>
 #include <sys/types.h>
@@ -17,6 +17,7 @@
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "esp_log.h"
+#include "netdb.h" // gethostbyname
 
 #include "libssh2_config.h"
 #include <libssh2.h>
@@ -67,8 +68,8 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session)
 
 void ssh_task(void *pvParameters)
 {
-    char *task_parameter = (char *)pvParameters;
-    ESP_LOGI(pcTaskGetTaskName(0), "Start task_parameter=%s", task_parameter);
+	char *task_parameter = (char *)pvParameters;
+	ESP_LOGI(TAG, "Start task_parameter=%s", task_parameter);
 
 	// SSH Staff
 	int sock;
@@ -83,29 +84,38 @@ void ssh_task(void *pvParameters)
 		while(1) { vTaskDelay(1); }
 	}
 
-	/* 
-	 * Your code is responsible for creating the socket establishing the
-	 * connection
-	 */
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-	if(-1 == sock) {
-		ESP_LOGE(TAG, "failed to create socket!");
-		while(1) { vTaskDelay(1); }
-	}
-
+	ESP_LOGI(TAG, "CONFIG_SSH_HOST=%s", CONFIG_SSH_HOST);
 	ESP_LOGI(TAG, "CONFIG_SSH_PORT=%d", CONFIG_SSH_PORT);
 	sin.sin_family = AF_INET;
 	//sin.sin_port = htons(22);
 	sin.sin_port = htons(CONFIG_SSH_PORT);
 	sin.sin_addr.s_addr = inet_addr(CONFIG_SSH_HOST);
-	if(connect(sock, (struct sockaddr*)(&sin),
-			   sizeof(struct sockaddr_in)) != 0) {
+	ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+	if (sin.sin_addr.s_addr == 0xffffffff) {
+		struct hostent *hp;
+		hp = gethostbyname(CONFIG_SSH_HOST);
+		if (hp == NULL) {
+			ESP_LOGE(TAG, "gethostbyname fail %s", CONFIG_SSH_HOST);
+			while(1) { vTaskDelay(1); }
+		}
+		struct ip4_addr *ip4_addr;
+		ip4_addr = (struct ip4_addr *)hp->h_addr;
+		sin.sin_addr.s_addr = ip4_addr->addr;
+		ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+	}
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if(sock == -1) {
+		ESP_LOGE(TAG, "failed to create socket!");
+		while(1) { vTaskDelay(1); }
+	}
+
+	if(connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in)) != 0) {
 		ESP_LOGE(TAG, "failed to connect!");
 		while(1) { vTaskDelay(1); }
 	}
 
-	/* Create a session instance
-	 */
+	/* Create a session instance */
 	session = libssh2_session_init();
 	if(!session) {
 		ESP_LOGE(TAG, "failed to session init");
@@ -146,8 +156,8 @@ void ssh_task(void *pvParameters)
 
 	/* Exec non-blocking on the remove host */
 	while((channel = libssh2_channel_open_session(session)) == NULL &&
-		  libssh2_session_last_error(session, NULL, NULL, 0) ==
-		  LIBSSH2_ERROR_EAGAIN) {
+		libssh2_session_last_error(session, NULL, NULL, 0) ==
+		LIBSSH2_ERROR_EAGAIN) {
 		waitsocket(sock, session);
 	}
 	if(channel == NULL) {
@@ -155,10 +165,8 @@ void ssh_task(void *pvParameters)
 		while(1) { vTaskDelay(1); }
 	}
 
-	while((rc = libssh2_channel_exec(channel, task_parameter)) ==
-		  LIBSSH2_ERROR_EAGAIN)
-		waitsocket(sock, session);
-
+	while((rc = libssh2_channel_exec(channel, task_parameter)) == LIBSSH2_ERROR_EAGAIN)
+	waitsocket(sock, session);
 	if(rc != 0) {
 		ESP_LOGE(TAG, "libssh2_channel_exec failed: %d", rc);
 		while(1) { vTaskDelay(1); }
@@ -189,20 +197,20 @@ void ssh_task(void *pvParameters)
 		while(rc > 0);
 
 		/* this is due to blocking that would occur otherwise so we loop on
-		   this condition */
+		 this condition */
 		if(rc == LIBSSH2_ERROR_EAGAIN) {
 			waitsocket(sock, session);
 		}
 		else
 			break;
-	}
+	} // end for
 	printf("\n");
 
 
 	int exitcode = 127;
 	char *exitsignal = (char *)"none";
 	while((rc = libssh2_channel_close(channel)) == LIBSSH2_ERROR_EAGAIN)
-		waitsocket(sock, session);
+	waitsocket(sock, session);
 	if(rc == 0) {
 		exitcode = libssh2_channel_get_exit_status(channel);
 		libssh2_channel_get_exit_signal(channel, &exitsignal,
@@ -221,12 +229,9 @@ void ssh_task(void *pvParameters)
 	libssh2_channel_free(channel);
 	channel = NULL;
 
-
 	// Close a session
-	libssh2_session_disconnect(session,
-							   "Normal Shutdown, Thank you for playing");
+	libssh2_session_disconnect(session, "Normal Shutdown, Thank you for playing");
 	libssh2_session_free(session);
-
 
 	// Close socket
 	close(sock);
@@ -236,5 +241,4 @@ void ssh_task(void *pvParameters)
 
 	xEventGroupSetBits( xEventGroup, TASK_FINISH_BIT );
 	vTaskDelete( NULL );
-
 }

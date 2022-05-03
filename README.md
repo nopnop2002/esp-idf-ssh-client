@@ -14,32 +14,19 @@ cd esp-idf-ssh-client/
 git clone https://github.com/libssh2/libssh2 components/libssh2
 cp esp-idf/libssh2_config.h components/libssh2/include
 cp esp-idf/CMakeLists.txt components/libssh2
-idf.py set-target {esp32/esp32s2/esp32c3}
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
 idf.py menuconfig
 idf.py flash
 ```
 
 
 # Configuration   
-You have to set this config value with menuconfig.   
-- CONFIG_ESP_WIFI_SSID   
-SSID (network name) to connect to.
-- CONFIG_ESP_WIFI_PASSWORD   
-WiFi password (WPA or WPA2) to use.
-- CONFIG_ESP_MAXIMUM_RETRY   
-Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
-- CONFIG_SSH_USER   
-Username of SSH.
-- CONFIG_SSH_PASSWORD   
-Password of SSH.
-- CONFIG_SSH_HOST   
-IP address of SSH host.   
-__mDMS name cannot be used.__   
-- CONFIG_SSH_PORT   
-TCP port number 22 is used by default.   
 
 ![config-main](https://user-images.githubusercontent.com/6020549/120054821-3d755500-c06d-11eb-950c-d357d0a9fdef.jpg)
-![config-app](https://user-images.githubusercontent.com/6020549/131051283-5614e66d-2c3a-4df7-88f2-863d3bf23b34.jpg)
+![config-app](https://user-images.githubusercontent.com/6020549/166416531-7fa74d94-86fc-4cac-a568-74de07d7a051.jpg)
+
+- ssh host   
+IP address or mDNS host name.   
 
 # ssh command list   
 ssh command list is defined ssh/command.txt.
