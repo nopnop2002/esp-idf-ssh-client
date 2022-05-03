@@ -3,7 +3,7 @@ ssh client for esp-idf.
 This project use [this](https://github.com/libssh2/libssh2) ssh library.   
 
 # Software requirements
-esp-idf v4.4   
+- esp-idf v4.4   
 This is because this version supports ESP32-S3 and uses mbed TLS 2.16.11.   
 ESP-IDF Ver5 has been updated to mbed TLS 3.1.0, but [this](https://github.com/libssh2/libssh2) ssh library does not support mbed TLS 3.1.0.   
 
