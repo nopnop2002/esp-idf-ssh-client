@@ -1,5 +1,6 @@
 # esp-idf-ssh-client
 ssh client for esp-idf.   
+You can use the ssh API to execute remote command.   
 This project use [this](https://github.com/libssh2/libssh2) ssh library.   
 
 # Software requirements
