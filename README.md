@@ -47,8 +47,14 @@ python --version
 https://github.com/nopnop2002/esp-idf-scp-client
 
 You can use scp and ssh to do heavy processing that esp32 alone cannot.  
-- Execute server-side command with ssh.   
-- Output the processing result to a file.   
-- Copy file from server using scp-get.   
+- Copy file from esp32 to remote using scp-put.   
+- Execute remote command using ssh-client.   
+- The processing result is redirected to a file.   
+- Copy file from remote to esp32 using scp-get.   
 
+For example, image processing:   
+- Take a picture using the esp32-cam.   
+- Send image files to remote using scp-put.   
+- Image processing such as shading is performed on the remote side using scp-client.   
+- Receive image file from remote using scp-get.   
 
