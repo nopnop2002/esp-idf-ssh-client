@@ -58,3 +58,5 @@ For example, image processing:
 - Image processing such as shading is performed on the remote side using scp-client.   
 - Receive image file from remote using scp-get.   
 
+https://github.com/nopnop2002/esp-idf-telnet-client   
+This also works with ESP-IDF V5.X.   
