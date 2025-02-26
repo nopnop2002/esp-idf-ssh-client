@@ -1,0 +1,4 @@
+[submodule "libssh2"]
+	path = libssh2
+	url = https://gitlab.com/fschuetz/libssh2.git
+	branch = main
