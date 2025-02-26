@@ -1,4 +1,4 @@
-/* ssh Client Example
+/*	 ssh Client Example
 
 	 This example code is in the Public Domain (or CC0 licensed, at your option.)
 
@@ -6,11 +6,13 @@
 	 software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 	 CONDITIONS OF ANY KIND, either express or implied.
 */
+
+#include <stdio.h>
+#include <inttypes.h>
 #include <string.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <stdio.h>
 #include <ctype.h>
 
 #include "freertos/FreeRTOS.h"
@@ -69,7 +71,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session)
 void ssh_task(void *pvParameters)
 {
 	char *task_parameter = (char *)pvParameters;
-	ESP_LOGI(TAG, "Start task_parameter=%s", task_parameter);
+	ESP_LOGI(TAG, "Start task_parameter=[%s]", task_parameter);
 
 	// SSH Staff
 	int sock;
@@ -84,24 +86,26 @@ void ssh_task(void *pvParameters)
 		while(1) { vTaskDelay(1); }
 	}
 
-	ESP_LOGI(TAG, "CONFIG_SSH_HOST=%s", CONFIG_SSH_HOST);
-	ESP_LOGI(TAG, "CONFIG_SSH_PORT=%d", CONFIG_SSH_PORT);
+	ESP_LOGD(TAG, "CONFIG_SSH_HOST=%s", CONFIG_SSH_HOST);
+	ESP_LOGD(TAG, "CONFIG_SSH_PORT=%d", CONFIG_SSH_PORT);
 	sin.sin_family = AF_INET;
 	//sin.sin_port = htons(22);
 	sin.sin_port = htons(CONFIG_SSH_PORT);
 	sin.sin_addr.s_addr = inet_addr(CONFIG_SSH_HOST);
-	ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+	ESP_LOGD(TAG, "sin.sin_addr.s_addr=%"PRIx32, sin.sin_addr.s_addr);
 	if (sin.sin_addr.s_addr == 0xffffffff) {
 		struct hostent *hp;
 		hp = gethostbyname(CONFIG_SSH_HOST);
 		if (hp == NULL) {
-			ESP_LOGE(TAG, "gethostbyname fail %s", CONFIG_SSH_HOST);
+			ESP_LOGE(TAG, "gethostbyname fail");
+			ESP_LOGE(TAG, "CONFIG_SSH_HOST=%s", CONFIG_SSH_HOST);
+			ESP_LOGE(TAG, "CONFIG_SSH_PORT=%d", CONFIG_SSH_PORT);
 			while(1) { vTaskDelay(1); }
 		}
 		struct ip4_addr *ip4_addr;
 		ip4_addr = (struct ip4_addr *)hp->h_addr;
 		sin.sin_addr.s_addr = ip4_addr->addr;
-		ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+		ESP_LOGD(TAG, "sin.sin_addr.s_addr=%"PRIx32, sin.sin_addr.s_addr);
 	}
 
 	sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -112,6 +116,8 @@ void ssh_task(void *pvParameters)
 
 	if(connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in)) != 0) {
 		ESP_LOGE(TAG, "failed to connect!");
+		ESP_LOGE(TAG, "CONFIG_SSH_HOST=%s", CONFIG_SSH_HOST);
+		ESP_LOGE(TAG, "CONFIG_SSH_PORT=%d", CONFIG_SSH_PORT);
 		while(1) { vTaskDelay(1); }
 	}
 

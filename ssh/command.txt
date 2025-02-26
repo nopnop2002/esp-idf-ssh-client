@@ -1,4 +1,4 @@
 # define ssh execute command
 uname -a
 ls -l
-python --version
+cat /etc/os-release
