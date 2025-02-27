@@ -10,7 +10,6 @@ ESP-IDF V4.4 release branch reached EOL in July 2024.
 
 
 # Installation
-
 ```
 git clone https://github.com/nopnop2002/esp-idf-ssh-client
 cd esp-idf-ssh-client/
