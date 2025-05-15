@@ -2,8 +2,9 @@
 ssh client for esp-idf.   
 You can use the ssh API to execute remote command.   
 This project use [this](https://gitlab.com/ch405labs/ch405labs_esp_libssh2) libssh2 library.   
-libssh2 is a client-side C library implementing the SSH2 protocol.   
 This is great work.   
+libssh2 is a client-side C library implementing the SSH2 protocol.   
+Capabilities and Features is [here](https://libssh2.org/).   
 
 # Software requirements
 ESP-IDF V5.0 or later.   
