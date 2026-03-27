@@ -9,7 +9,7 @@ Capabilities and Features is [here](https://libssh2.org/).
 # Software requirements
 ESP-IDF V5.0 or later.   
 ESP-IDF V4.4 release branch reached EOL in July 2024.   
-
+___It does not work with ESP-IDF V6.___
 
 # Installation
 ```
